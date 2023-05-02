@@ -22,10 +22,10 @@ const Auth = () => {
                     borderRadius={5}
                 >
                     <ThemeProvider theme={theme}>
-                        <Typography padding={2} textAlign="center">Login</Typography>
-                        <TextField margin="normal" />
-                        <TextField margin="normal" />
-                        <TextField margin="normal" />
+                        <Typography variant="h3" padding={2} textAlign="center">Login</Typography>
+                        <TextField placeholder="Name" margin="normal" />
+                        <TextField placeholder="Email" margin="normal" />
+                        <TextField placeholder="Password" margin="normal" />
                         <Button variant="contained" sx={{ borderRadius: 2, mb: 1 }} color="neutral">
                             <Typography color="primary">Submit</Typography>
                         </Button>
