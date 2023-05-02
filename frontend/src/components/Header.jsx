@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, Typography, Box, Button, Tab, Tabs } from '@mui/material';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { Link } from 'react-router-dom';
+import { useSelector } from "react-redux";
 
 
 const theme = createTheme({
@@ -21,6 +23,7 @@ const theme = createTheme({
 
 
 const Header = () => {
+    const isLoggedIn = useSelector((state) => state.isLoggedIn);
     const [value, setValue] = useState();
 
     return (
@@ -31,23 +34,30 @@ const Header = () => {
                 <Typography variant="h2" color="black" fontFamily={"Helvetica Neue"}>
                     Blog App
                 </Typography>
-                <Box display="flex" marginLeft={'auto'} marginRight={'auto'}>
+
+                {isLoggedIn && <Box display="flex" marginLeft={'auto'} marginRight={'auto'}>
                     <Tabs value={value} onChange={(e, val) => setValue(val)}>
-                        <Tab label="All blogs" />
-                        <Tab label="My blogs" />
+                        <Tab LinkComponent={Link} to="/blogs" label="All blogs" />
+                        <Tab LinkComponent={Link} to="/myBlogs" label="My blogs" />
                     </Tabs>
-                </Box>
+                </Box>}
+
+
                 <Box marginLeft="auto">
                     <ThemeProvider theme={theme}>
-                        <Button color="neutral" variant="contained" sx={{ mr: 1 }}>
-                            <Typography color="black">Login</Typography>
-                        </Button>
-                        <Button color="neutral" variant="contained" sx={{ mr: 1 }}>
-                            <Typography color="black">Signup</Typography>
-                        </Button>
-                        <Button color="neutral" variant="contained">
-                            <Typography color="black">Logout</Typography>
-                        </Button>
+                        {!isLoggedIn && <>
+                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained" sx={{ mr: 1 }}>
+                                <Typography color="black">Login</Typography>
+                            </Button>
+                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained" sx={{ mr: 1 }}>
+                                <Typography color="black">Signup</Typography>
+                            </Button> </>}
+
+                        {isLoggedIn &&
+                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained">
+                                <Typography color="black">Logout</Typography>
+                            </Button>}
+
                     </ThemeProvider>
                 </Box>
             </Toolbar>
