@@ -1,13 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Button, TextField } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { theme } from '../themes/theme';
 
 
 const Auth = () => {
+    const [inputs, setInputs] = useState({
+        name: "", email: "", password: ""
+    })
+    const [isSignup, setIsSignup] = useState(false);
+    const handleChange = (e) => {
+        setInputs((prevState) => ({
+            ...prevState,
+            [e.target.name]: e.target.value
+        }))
+    };
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log(inputs);
+    }
+
     return (
         <div>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <Box
                     sx={{ background: 'linear-gradient(90deg, rgba(38,198,230,1) 71%, rgba(153,210,167,0.3463979341736695) 98%)' }}
                     maxWidth={400}
@@ -22,15 +37,15 @@ const Auth = () => {
                     borderRadius={5}
                 >
                     <ThemeProvider theme={theme}>
-                        <Typography variant="h3" padding={2} textAlign="center">Login</Typography>
-                        <TextField placeholder="Name" margin="normal" />
-                        <TextField placeholder="Email" margin="normal" />
-                        <TextField placeholder="Password" margin="normal" />
-                        <Button variant="contained" sx={{ borderRadius: 2, mb: 1 }} color="neutral">
+                        <Typography variant="h3" padding={2} textAlign="center">{isSignup ? "Signup" : "Login"}</Typography>
+                        {isSignup && <TextField name="name" onChange={handleChange} value={inputs.name} placeholder="Name" margin="normal" />} {" "}
+                        <TextField name="email" onChange={handleChange} value={inputs.email} type={'email'} placeholder="Email" margin="normal" />
+                        <TextField name="password" onChange={handleChange} value={inputs.password} type={'password'} placeholder="Password" margin="normal" />
+                        <Button type="submit" variant="contained" sx={{ borderRadius: 2, mb: 1 }} color="neutral">
                             <Typography color="primary">Submit</Typography>
                         </Button>
-                        <Button variant="contained" sx={{ borderRadius: 2 }} color="neutral">
-                            <Typography color="primary">Change to Signup</Typography>
+                        <Button onClick={() => setIsSignup(!isSignup)} variant="contained" sx={{ borderRadius: 2 }} color="neutral">
+                            <Typography color="primary">Change to {isSignup ? "Login" : "Signup"}</Typography>
                         </Button>
                     </ThemeProvider>
                 </Box>
