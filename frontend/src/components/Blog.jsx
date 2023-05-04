@@ -18,7 +18,6 @@ const Blog = ({ title, description, imageURL, userName }) => {
                     }
 
                     title={title}
-                    subheader="September 14, 2016"
                 />
                 <CardMedia
                     component="img"
