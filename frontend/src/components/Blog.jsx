@@ -17,7 +17,7 @@ const Blog = ({ title, description, imageURL, userName }) => {
                         </Avatar>
                     }
 
-                    title="Shrimp and Chorizo Paella"
+                    title={title}
                     subheader="September 14, 2016"
                 />
                 <CardMedia
