@@ -16,15 +16,31 @@ const AddBlog = () => {
             [e.target.name]: e.target.value
         }))
     };
+
+    const isValidUrl = (url) => {
+        try {
+            new URL(url);
+            return true;
+        } catch (_) {
+            return false;
+        }
+    };
+
     const sendRequest = async () => {
-        const res = await axios.post("http://localhost:8000/api/blog/add", {
-            title: inputs.title,
-            description: inputs.description,
-            image: inputs.imageURL,
-            user: localStorage.getItem("userId")
-        }).catch(err => console.log(err));
-        const data = await res.data;
-        return data;
+        if (isValidUrl(inputs.imageURL)) {
+            const res = await axios
+                .post("http://localhost:8000/api/blog/add", {
+                    title: inputs.title,
+                    description: inputs.description,
+                    image: inputs.imageURL,
+                    user: localStorage.getItem("userId"),
+                })
+                .catch((err) => console.log(err));
+            const data = await res.data;
+            return data;
+        } else {
+            console.log("Invalid image URL");
+        }
     };
 
     const handleSubmit = (e) => {
