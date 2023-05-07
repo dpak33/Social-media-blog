@@ -3,9 +3,11 @@ import { Box, Button, InputLabel, Typography, TextField } from '@mui/material';
 import { theme } from '../themes/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AddBlog = () => {
     const labelStyles = { mb: 1, mt: 2, fontSize: '20px', fontWeight: 'bold' };
+    const navigate = useNavigate();
     const [inputs, setInputs] = useState({
         title: "", description: "", imageURL: ""
     });
@@ -46,7 +48,7 @@ const AddBlog = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(inputs);
-        sendRequest().then(data => console.log(data));
+        sendRequest().then((data) => console.log(data)).then(() => navigate("/blogs"));
     };
 
     return (
