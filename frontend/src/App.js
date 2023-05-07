@@ -23,7 +23,6 @@ function App() {
         <Route path="/blogs/add" element={<AddBlog />} />
         <Route path="/myBlogs" element={<UserBlogs />} />
         <Route path="/myBlogs/:id" element={<BlogDetail />} />
-
       </Routes>
     </main>
 

@@ -3,9 +3,13 @@ import { Avatar, Card, CardContent, Typography, CardHeader, IconButton, Box } fr
 import { red } from '@mui/material/colors';
 import BorderColorTwoToneIcon from '@mui/icons-material/BorderColorTwoTone';
 import ClearTwoToneIcon from '@mui/icons-material/ClearTwoTone';
+import { useNavigate } from 'react-router-dom';
 
-const Blog = ({ title, description, imageURL, userName, isUser }) => {
-    console.log(title, isUser);
+const Blog = ({ title, description, imageURL, userName, isUser, id }) => {
+    const navigate = useNavigate();
+    const handleEdit = (e) => {
+        navigate(`/myBlogs/${id}`)
+    }
     const [loadedImage, setLoadedImage] = useState(null);
 
     useEffect(() => {
@@ -41,8 +45,11 @@ const Blog = ({ title, description, imageURL, userName, isUser }) => {
             }}>
                 {isUser && (
                     <Box display="flex">
-                        <IconButton sx={{ marginLeft: 'auto' }}><BorderColorTwoToneIcon /></IconButton>
-                        <IconButton><ClearTwoToneIcon /></IconButton>
+                        <IconButton onClick={handleEdit} sx={{ marginLeft: 'auto' }}>
+                            <BorderColorTwoToneIcon />
+                        </IconButton>
+                        <IconButton onClick={handleEdit}>
+                            <ClearTwoToneIcon /></IconButton>
                     </Box>
                 )}
                 <CardHeader
