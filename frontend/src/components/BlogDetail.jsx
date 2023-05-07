@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { Box, Button, InputLabel, Typography, TextField } from '@mui/material';
 import { theme } from '../themes/theme';
 import { ThemeProvider } from '@mui/material/styles';
@@ -7,7 +7,7 @@ import axios from 'axios';
 const labelStyles = { mb: 1, mt: 2, fontSize: '20px', fontWeight: 'bold' };
 
 const BlogDetail = () => {
-
+    const navigate = useNavigate();
     const [blog, setBlog] = useState(null); // Add this line to initialize the state
     const { id } = useParams();
     console.log(id);
@@ -51,7 +51,7 @@ const BlogDetail = () => {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log(inputs);
-        sendRequest().then(data => console.log(data));
+        sendRequest().then(data => console.log(data)).then(() => navigate("/myBlogs/"));
     };
 
     return (
