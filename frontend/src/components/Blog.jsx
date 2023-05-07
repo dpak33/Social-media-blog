@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Avatar, Card, CardContent, Typography, CardHeader } from '@mui/material';
+import { Avatar, Card, CardContent, Typography, CardHeader, IconButton, Box } from '@mui/material';
 import { red } from '@mui/material/colors';
+import BorderColorTwoToneIcon from '@mui/icons-material/BorderColorTwoTone';
+import ClearTwoToneIcon from '@mui/icons-material/ClearTwoTone';
 
-const Blog = ({ title, description, imageURL, userName }) => {
+const Blog = ({ title, description, imageURL, userName, isUser }) => {
+    console.log(title, isUser);
     const [loadedImage, setLoadedImage] = useState(null);
 
     useEffect(() => {
@@ -36,6 +39,12 @@ const Blog = ({ title, description, imageURL, userName }) => {
                 width: "40%", margin: 'auto', mt: 2, padding: 2, boxShadow: "5px 5px 10px", ":hoover:":
                     { boxShadow: "10px 10px 20px" }
             }}>
+                {isUser && (
+                    <Box display="flex">
+                        <IconButton sx={{ marginLeft: 'auto' }}><BorderColorTwoToneIcon /></IconButton>
+                        <IconButton><ClearTwoToneIcon /></IconButton>
+                    </Box>
+                )}
                 <CardHeader
                     avatar={
                         <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
