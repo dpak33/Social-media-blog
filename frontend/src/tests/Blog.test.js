@@ -2,6 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 import Blog from '../components/Blog';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
+import React from 'react';
 
 jest.mock('axios');
 
