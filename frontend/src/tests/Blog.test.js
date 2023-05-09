@@ -1,8 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import Blog from '../components/Blog';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
-import React from 'react';
+
 
 jest.mock('axios');
 
@@ -112,3 +112,39 @@ test('does not render edit and delete buttons when isUser is false', () => {
     expect(editButton).not.toBeInTheDocument();
     expect(deleteButton).not.toBeInTheDocument();
 });
+
+
+
+test('calls navigate with correct URL when the edit button is clicked', () => {
+    const blogProps = {
+        title: 'Test Blog Title',
+        description: 'Test Blog Description',
+        imageURL: 'test-image.jpg',
+        userName: 'Test User',
+        isUser: true,
+        id: '123',
+        handleEdit: jest.fn(),
+        handleDelete: jest.fn(),
+    };
+
+    const navigateSpy = jest.spyOn(blogProps, 'handleEdit');
+
+    render(
+        <MemoryRouter>
+            <Blog {...blogProps} />
+        </MemoryRouter>
+    );
+
+    const editButton = screen.getByRole('button', { name: /edit/i });
+    fireEvent.click(editButton);
+
+    expect(navigateSpy).toHaveBeenCalledTimes(1);
+    expect(navigateSpy.mock.calls[0][0]).toBe(`/myBlogs/${blogProps.id}`);
+});
+
+
+
+
+
+
+
