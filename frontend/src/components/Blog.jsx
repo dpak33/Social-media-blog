@@ -58,10 +58,10 @@ const Blog = ({ title, description, imageURL, userName, isUser, id }) => {
             }}>
                 {isUser && (
                     <Box display="flex">
-                        <IconButton onClick={handleEdit} sx={{ marginLeft: 'auto' }}>
+                        <IconButton onClick={handleEdit} sx={{ marginLeft: 'auto' }} aria-label='edit'>
                             <BorderColorTwoToneIcon />
                         </IconButton>
-                        <IconButton onClick={handleDelete}>
+                        <IconButton onClick={handleDelete} aria-label='delete'>
                             <ClearTwoToneIcon /></IconButton>
                     </Box>
                 )}
