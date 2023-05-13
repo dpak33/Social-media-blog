@@ -114,8 +114,7 @@ test('does not render edit and delete buttons when isUser is false', () => {
 });
 
 
-
-test('calls navigate with correct URL when the edit button is clicked', () => {
+test('delete blog post', async () => {
     const blogProps = {
         title: 'Test Blog Title',
         description: 'Test Blog Description',
@@ -123,11 +122,9 @@ test('calls navigate with correct URL when the edit button is clicked', () => {
         userName: 'Test User',
         isUser: true,
         id: '123',
-        handleEdit: jest.fn(),
-        handleDelete: jest.fn(),
     };
 
-    const navigateSpy = jest.spyOn(blogProps, 'handleEdit');
+    axios.delete.mockResolvedValue({});
 
     render(
         <MemoryRouter>
@@ -135,13 +132,11 @@ test('calls navigate with correct URL when the edit button is clicked', () => {
         </MemoryRouter>
     );
 
-    const editButton = screen.getByRole('button', { name: /edit/i });
-    fireEvent.click(editButton);
+    const deleteButton = screen.getByRole('button', { name: /delete/i });
+    fireEvent.click(deleteButton);
 
-    expect(navigateSpy).toHaveBeenCalledTimes(1);
-    expect(navigateSpy.mock.calls[0][0]).toBe(`/myBlogs/${blogProps.id}`);
+    expect(axios.delete).toHaveBeenCalledWith(`http://localhost:8000/api/blog/${blogProps.id}`);
 });
-
 
 
 
