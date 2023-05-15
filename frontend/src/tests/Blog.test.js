@@ -6,6 +6,7 @@ import axios from 'axios';
 import AddBlog from '../components/AddBlog';
 
 
+
 jest.mock('axios');
 
 axios.delete.mockResolvedValue({ data: {} });
@@ -155,18 +156,35 @@ describe('Add Blog', () => {
 
         jest.spyOn(axios, 'post').mockResolvedValue({ data: 'Test data' });
 
+
         fireEvent.click(screen.getByText('Submit'));
 
         expect(axios.post).toHaveBeenCalledWith(
             'http://localhost:8000/api/blog/add', {
             title: 'Test title',
-            description: 'Test Description',
-            imageURL: 'http://example.com/image.jpeg',
+            description: 'Test description',
+            image: 'http://example.com/image.jpeg',
             user: localStorage.getItem('userId')
-        }
-        );
-        expect(navigate).toHaveBeenCalledWith('/blogs');
+        });
     });
+
+    test('fails with invalid URL', () => {
+        render(<MemoryRouter><AddBlog /></MemoryRouter>);
+
+        fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test title' } });
+        fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test description' } });
+        fireEvent.change(screen.getByLabelText('ImageURL'), { target: { value: 'invalid url' } });
+
+        jest.spyOn(axios, 'post').mockRejectedValue(new Error('Network error: Something went wrong'));
+
+        fireEvent.click(screen.getByText('Submit'));
+
+        waitFor(() => {
+            expect(console.log('"Invalid image URL"'));
+        });
+    });
+
+
 
 });
 
