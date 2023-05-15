@@ -4,7 +4,7 @@ import Blogs from '../components/Blogs';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
 import AddBlog from '../components/AddBlog';
-
+import { sendRequest } from '../helpers/sendRequest';
 
 
 jest.mock('axios');
@@ -185,4 +185,52 @@ describe('Add Blog', () => {
     });
 });
 
+describe('sendRequest', () => {
+    afterEach(() => {
+        jest.clearAllMocks(); // Clear all mock function calls after each test
+    });
 
+
+    test('sends request with valid inputs', async () => {
+        const mockData = 'Test data';
+        axios.post.mockResolvedValueOnce({ data: mockData });
+
+        // Mock localStorage.getItem
+        Storage.prototype.getItem = jest.fn(() => 'mockUserId');
+
+        const inputs = {
+            title: 'Test title',
+            description: 'Test description',
+            imageURL: 'http://example.com/image.jpg',
+        };
+
+        const expectedRequestBody = {
+            title: 'Test title',
+            description: 'Test description',
+            image: 'http://example.com/image.jpg',
+            user: 'mockUserId',
+        };
+
+        const result = await sendRequest(inputs);
+
+        expect(axios.post).toHaveBeenCalledWith(
+            'http://localhost:8000/api/blog/add',
+            expectedRequestBody
+        );
+
+        expect(result).toBe(mockData);
+    });
+
+
+    test('throws error with invalid image URL', async () => {
+        const inputs = {
+            title: 'Test title',
+            description: 'Test description',
+            imageURL: 'invalid url',
+        };
+
+        await expect(sendRequest(inputs)).rejects.toThrowError('Invalid image URL');
+
+        expect(axios.post).not.toHaveBeenCalled();
+    });
+});
