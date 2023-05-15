@@ -1,7 +1,9 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import Blog from '../components/Blog';
+import Blogs from '../components/Blogs';
 import { MemoryRouter } from 'react-router-dom';
 import axios from 'axios';
+import AddBlog from '../components/AddBlog';
 
 
 jest.mock('axios');
@@ -139,5 +141,32 @@ test('delete blog post', async () => {
 });
 
 
+describe('Add Blog', () => {
+    test('renders AddBlog component', () => {
+        render(<MemoryRouter><AddBlog /></MemoryRouter>);
+    })
 
+    test('handles form submission', () => {
+        render(<MemoryRouter><AddBlog /></MemoryRouter>);
+
+        fireEvent.change(screen.getByLabelText('Title'), { target: { value: 'Test title' } });
+        fireEvent.change(screen.getByLabelText('Description'), { target: { value: 'Test description' } });
+        fireEvent.change(screen.getByLabelText('ImageURL'), { target: { value: 'http://example.com/image.jpeg' } });
+
+        jest.spyOn(axios, 'post').mockResolvedValue({ data: 'Test data' });
+
+        fireEvent.click(screen.getByText('Submit'));
+
+        expect(axios.post).toHaveBeenCalledWith(
+            'http://localhost:8000/api/blog/add', {
+            title: 'Test title',
+            description: 'Test Description',
+            imageURL: 'http://example.com/image.jpeg',
+            user: localStorage.getItem('userId')
+        }
+        );
+        expect(navigate).toHaveBeenCalledWith('/blogs');
+    });
+
+});
 
