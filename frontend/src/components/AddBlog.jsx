@@ -4,6 +4,7 @@ import { theme } from '../themes/theme';
 import { ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { sendRequest } from '../helpers/sendRequest';
 
 const AddBlog = () => {
     const labelStyles = { mb: 1, mt: 2, fontSize: '20px', fontWeight: 'bold' };
@@ -19,36 +20,9 @@ const AddBlog = () => {
         }))
     };
 
-    const isValidUrl = (url) => {
-        try {
-            new URL(url);
-            return true;
-        } catch (_) {
-            return false;
-        }
-    };
-
-    const sendRequest = async () => {
-        if (isValidUrl(inputs.imageURL)) {
-            const res = await axios
-                .post("http://localhost:8000/api/blog/add", {
-                    title: inputs.title,
-                    description: inputs.description,
-                    image: inputs.imageURL,
-                    user: localStorage.getItem("userId"),
-                })
-                .catch((err) => console.log(err));
-            const data = await res.data;
-            return data;
-        } else {
-            console.log("Invalid image URL");
-        }
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(inputs);
-        sendRequest().then((data) => console.log(data)).then(() => navigate("/blogs"));
+        sendRequest(inputs).then((data) => console.log(data)).then(() => navigate("/blogs")).catch(err => console.log(err));
     };
 
     return (

@@ -183,8 +183,6 @@ describe('Add Blog', () => {
             expect(console.log('"Invalid image URL"'));
         });
     });
-
-
-
 });
+
 
