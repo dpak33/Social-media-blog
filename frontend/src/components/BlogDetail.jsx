@@ -10,10 +10,11 @@ const BlogDetail = () => {
     const navigate = useNavigate();
     const [blog, setBlog] = useState(null); // Add this line to initialize the state
     const { id } = useParams();
-    console.log(id);
+    const [loading, setLoading] = useState(true);
 
     const [inputs, setInputs] = useState({
-
+        title: null,
+        description: null
     });
 
     const handleChange = (e) => {
@@ -27,8 +28,10 @@ const BlogDetail = () => {
         try {
             const res = await axios.get(`http://localhost:8000/api/blog/${id}`);
             const data = res.data;
+            console.log('Data: ', data);
             setBlog(data.blog);
-            setInputs({ title: data.blog.title, description: data.blog.description })
+            setInputs({ title: data.blog.title, description: data.blog.description });
+            setLoading(false);
         } catch (err) {
             console.log(err);
         }
@@ -56,16 +59,17 @@ const BlogDetail = () => {
 
     return (
         <div>
-            {inputs &&
-                <form onSubmit={handleSubmit}>
+            {console.log('Inputs: ', inputs)}
+            {!loading &&
+                <form onSubmit={handleSubmit} data-testid="blog-form">
                     <Box border={3} borderColor="grey" boxShadow={"15px 15px 30px #e53e3e"} borderRadius={8} padding={3} margin={"auto"} marginTop={3} display="flex" flexDirection={'column'} width={"80%"}>
                         <Typography fontWeight='bold' padding={3} color="black" variant="h4" textAlign={'center'}>Post your blog!</Typography>
                         <InputLabel sx={labelStyles} >Title</InputLabel>
-                        <TextField name="title" onChange={handleChange} value={inputs.title} margin='auto' variant="outlined" />
+                        <TextField name="title" onChange={handleChange} value={inputs.title} margin='auto' variant="outlined" data-testid="title-input" />
                         <InputLabel sx={labelStyles}>Description</InputLabel>
-                        <TextField name="description" onChange={handleChange} value={inputs.description} margin='auto' variant="outlined" />
+                        <TextField name="description" onChange={handleChange} value={inputs.description} margin='auto' variant="outlined" data-testid="description-input" />
                         <ThemeProvider theme={theme}>
-                            <Button type="submit" variant="contained" sx={{ borderRadius: 2, mb: 1, mt: 2 }} color="neutral">
+                            <Button type="submit" variant="contained" sx={{ borderRadius: 2, mb: 1, mt: 2 }} color="neutral" data-testid="submit-button">
                                 <Typography color="primary">Submit</Typography>
                             </Button>
                         </ThemeProvider>

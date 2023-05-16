@@ -1,11 +1,12 @@
 import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import Blog from '../components/Blog';
 import Blogs from '../components/Blogs';
-import { MemoryRouter } from 'react-router-dom';
+import { MemoryRouter, BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 import AddBlog from '../components/AddBlog';
 import { sendRequest } from '../helpers/sendRequest';
-
+import UserBlogs from '../components/UserBlogs';
+import BlogDetail from '../components/BlogDetail';
 
 jest.mock('axios');
 
@@ -234,3 +235,69 @@ describe('sendRequest', () => {
         expect(axios.post).not.toHaveBeenCalled();
     });
 });
+
+describe('UserBlogs', () => {
+    it('fetches and displays user and blogs data', async () => {
+        const fakeData = {
+            user: {
+                name: 'Test User',
+                blogs: [
+                    {
+                        _id: '1',
+                        title: 'Test Blog 1',
+                        description: 'Test Description 1',
+                        image: 'Test Image URL 1',
+                    },
+                    {
+                        _id: '2',
+                        title: 'Test Blog 2',
+                        description: 'Test Description 2',
+                        image: 'Test Image URL 2',
+                    },
+                ],
+            },
+        };
+
+        // mock the axios.get function
+        axios.get.mockResolvedValueOnce({ data: fakeData });
+
+        const { getByText } = render(<MemoryRouter><UserBlogs /></MemoryRouter>);
+
+        // Use the asynchronous version of waitFor to handle the promise and await the mock response
+        await waitFor(() => getByText('Test Blog 1'));
+        await waitFor(() => getByText('Test Blog 2'));
+
+        // Check if the data is displayed
+        expect(getByText('Test Blog 1')).toBeInTheDocument();
+        expect(getByText('Test Blog 2')).toBeInTheDocument();
+    });
+
+    it('does not display blogs if there are none', async () => {
+        const fakeData = {
+            user: {
+                name: 'Test User',
+                blogs: [],
+            },
+        };
+
+        // mock the axios.get function
+        axios.get.mockResolvedValueOnce({ data: fakeData });
+
+        const { queryByText } = render(<UserBlogs />);
+
+        // Use the asynchronous version of waitFor to handle the promise and await the mock response
+        await waitFor(() => queryByText('Test User'));
+
+        // Check if no blogs are displayed
+        expect(queryByText('Test Blog 1')).not.toBeInTheDocument();
+        expect(queryByText('Test Blog 2')).not.toBeInTheDocument();
+    });
+});
+
+const blogData = {
+    blog: {
+        title: 'Test Blog 1',
+        description: 'Test Description 1',
+    },
+};
+
