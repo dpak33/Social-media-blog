@@ -1,4 +1,4 @@
-import { render, screen, waitFor, fireEvent } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent, within } from '@testing-library/react';
 import Blog from '../components/Blog';
 import Blogs from '../components/Blogs';
 import { MemoryRouter, BrowserRouter } from 'react-router-dom';
@@ -7,6 +7,7 @@ import AddBlog from '../components/AddBlog';
 import { sendRequest } from '../helpers/sendRequest';
 import UserBlogs from '../components/UserBlogs';
 import BlogDetail from '../components/BlogDetail';
+import React from 'react';
 
 jest.mock('axios');
 
@@ -294,10 +295,42 @@ describe('UserBlogs', () => {
     });
 });
 
-const blogData = {
-    blog: {
-        title: 'Test Blog 1',
-        description: 'Test Description 1',
-    },
-};
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useParams: () => ({ id: '1' }),
+    useNavigate: () => jest.fn(),
+}));
 
+describe('BlogDetail', () => {
+    it('fetches and displays blog data', async () => {
+        // Use the existing mocked axios instance
+        axios.get.mockResolvedValueOnce({ data: { blog: { title: 'Test Blog 1', description: 'Test Description 1' } } });
+
+        const useStateMock = jest.spyOn(React, 'useState');
+        const setInputs = jest.fn();
+        useStateMock.mockImplementationOnce(init => [init, setInputs]);
+
+        const { findByTestId } = render(
+            <BrowserRouter>
+                <BlogDetail />
+            </BrowserRouter>
+        );
+
+        // Simulate the state update
+        setInputs({ title: 'Test Blog 1', description: 'Test Description 1' });
+
+        await waitFor(async () => {
+            const titleInputContainer = await findByTestId('title-input');
+            const descriptionInputContainer = await findByTestId('description-input');
+            //within checks that the value within the HTML element matches. expect element.toHave or value.toBe returns undefined...
+            const titleInput = within(titleInputContainer).getByRole('textbox');
+            const descriptionInput = within(descriptionInputContainer).getByRole('textbox');
+
+            expect(titleInput).toHaveValue('Test Blog 1');
+            expect(descriptionInput).toHaveValue('Test Description 1');
+        });
+
+        // Clear the mock at the end of the test
+        jest.clearAllMocks();
+    });
+});
