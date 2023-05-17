@@ -40,6 +40,24 @@ describe('Auth', () => {
         expect(getByPlaceholderText('Password').value).toBe('password');
     });
 
+    it('toggles between signup and login', () => {
+        const { getByText } = render(
+            <Provider store={mockStore}>
+                <BrowserRouter>
+                    <Auth />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(getByText('Change to Signup'));
+        expect(getByText('Signup')).toBeInTheDocument();
+        expect(getByText('Change to Login')).toBeInTheDocument();
+
+        fireEvent.click(getByText('Change to Login'));
+        expect(getByText('Login')).toBeInTheDocument();
+        expect(getByText('Change to Signup')).toBeInTheDocument();
+    });
+
     it('makes a post request to the correct login endpoint on form submission', async () => {
         axios.post.mockResolvedValueOnce({ data: { user: { _id: '1234' } } });
 
