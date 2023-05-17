@@ -3,6 +3,8 @@ import { Provider } from "react-redux";
 import { BrowserRouter } from 'react-router-dom';
 import axios from 'axios';
 import Auth from '../components/Auth';
+import { useNavigate } from "react-router-dom";
+
 
 jest.mock('axios');
 jest.mock('react-router-dom', () => ({
@@ -39,6 +41,7 @@ describe('Auth', () => {
         expect(getByPlaceholderText('Email').value).toBe('test@test.com');
         expect(getByPlaceholderText('Password').value).toBe('password');
     });
+
 
     it('toggles between signup and login', () => {
         const { getByText } = render(
