@@ -8,7 +8,10 @@ import { sendRequest } from '../helpers/sendRequest';
 import UserBlogs from '../components/UserBlogs';
 import BlogDetail from '../components/BlogDetail';
 import React from 'react';
-
+import { Provider } from 'react-redux';
+import { useSelector } from 'react-redux';
+import Header from '../components/Header';
+import { store } from '../store';
 
 jest.mock('axios');
 
@@ -435,3 +438,67 @@ describe('Blogs', () => {
     });
 
 });
+
+jest.mock('react-redux', () => ({
+    ...jest.requireActual('react-redux'),
+    useSelector: jest.fn(),
+}));
+
+describe('Header', () => {
+    it('displays the correct app title', () => {
+        const { getByTestId } = render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Header />
+                </BrowserRouter>
+            </Provider>
+        );
+        const title = getByTestId('app-title');
+        expect(title.textContent).toBe('Blog App');
+    });
+
+    it('renders the login button when user is not logged in', () => {
+        useSelector.mockImplementationOnce(() => false); // Mock the isLoggedIn state to be false
+        const { getByTestId } = render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Header />
+                </BrowserRouter>
+            </Provider>
+        );
+        const loginButton = getByTestId('login-button');
+        expect(loginButton).toBeInTheDocument();
+    });
+
+    it('renders the logout button when user is logged in', () => {
+        useSelector.mockImplementationOnce(() => true); // Mock the isLoggedIn state to be true
+        const { getByTestId } = render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Header />
+                </BrowserRouter>
+            </Provider>
+        );
+        const logoutButton = getByTestId('logout-button');
+        expect(logoutButton).toBeInTheDocument();
+    });
+
+    it('renders the tabs when user is logged in', () => {
+        useSelector.mockImplementationOnce(() => true); // Mock the isLoggedIn state to be true
+        const { getByTestId } = render(
+            <Provider store={store}>
+                <BrowserRouter>
+                    <Header />
+                </BrowserRouter>
+            </Provider>
+        );
+        const allBlogsTab = getByTestId('all-blogs-tab');
+        const myBlogsTab = getByTestId('my-blogs-tab');
+        const addBlogTab = getByTestId('add-blog-tab');
+
+        expect(allBlogsTab).toBeInTheDocument();
+        expect(myBlogsTab).toBeInTheDocument();
+        expect(addBlogTab).toBeInTheDocument();
+    });
+
+})

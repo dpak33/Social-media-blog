@@ -17,15 +17,15 @@ const Header = () => {
             position="sticky"
             sx={{ background: 'linear-gradient(90deg, rgba(226,236,238,1) 4%, rgba(2,0,36,1) 98%)' }}>
             <Toolbar>
-                <Typography variant="h2" color="black" fontFamily={"Helvetica Neue"}>
+                <Typography variant="h2" color="black" fontFamily={"Helvetica Neue"} data-testid="app-title">
                     Blog App
                 </Typography>
 
                 {isLoggedIn && <Box display="flex" marginLeft={'auto'} marginRight={'auto'}>
                     <Tabs value={value} onChange={(e, val) => setValue(val)}>
-                        <Tab LinkComponent={Link} to="/blogs" label="All blogs" />
-                        <Tab LinkComponent={Link} to="/myBlogs" label="My blogs" />
-                        <Tab LinkComponent={Link} to="/blogs/add" label="Add blog" />
+                        <Tab LinkComponent={Link} to="/blogs" label="All blogs" data-testid="all-blogs-tab" />
+                        <Tab LinkComponent={Link} to="/myBlogs" label="My blogs" data-testid="my-blogs-tab" />
+                        <Tab LinkComponent={Link} to="/blogs/add" label="Add blog" data-testid="add-blog-tab" />
                     </Tabs>
                 </Box>}
 
@@ -33,15 +33,15 @@ const Header = () => {
                 <Box marginLeft="auto">
                     <ThemeProvider theme={theme}>
                         {!isLoggedIn && <>
-                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained" sx={{ mr: 1 }}>
+                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained" sx={{ mr: 1 }} data-testid="login-button">
                                 <Typography color="black">Login</Typography>
                             </Button>
-                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained" sx={{ mr: 1 }}>
+                            <Button LinkComponent={Link} to="/auth" color="neutral" variant="contained" sx={{ mr: 1 }} data-testid="signup-button">
                                 <Typography color="black">Signup</Typography>
                             </Button> </>}
 
                         {isLoggedIn &&
-                            <Button onClick={() => dispatch(authActions.logout())} LinkComponent={Link} to="/auth" color="neutral" variant="contained">
+                            <Button onClick={() => dispatch(authActions.logout())} LinkComponent={Link} to="/auth" color="neutral" variant="contained" data-testid="logout-button">
                                 <Typography color="black">Logout</Typography>
                             </Button>}
 
