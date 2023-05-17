@@ -40,8 +40,10 @@ describe('Auth', () => {
         expect(getByPlaceholderText('Password').value).toBe('password');
     });
 
-    it('makes a post request to the correct endpoint on form submission', async () => {
-        axios.post.mockResolvedValueOnce({ data: {} });
+
+
+    it('makes a post request to the correct signup endpoint on form submission', async () => {
+        axios.post.mockResolvedValueOnce({ data: { user: { _id: '1234' } } });
 
         const { getByPlaceholderText, getByText } = render(
             <Provider store={mockStore}>

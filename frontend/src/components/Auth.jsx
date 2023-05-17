@@ -10,24 +10,29 @@ import { useNavigate } from 'react-router-dom';
 const Auth = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [inputs, setInputs] = useState({
-        name: "", email: "", password: ""
-    });
+
+    const [loginInputs, setLoginInputs] = useState({ email: "", password: "" });
+    const [signupInputs, setSignupInputs] = useState({ name: "", email: "", password: "" });
 
     const [isSignup, setIsSignup] = useState(false);
+
     const handleChange = (e) => {
-        setInputs((prevState) => ({
-            ...prevState,
-            [e.target.name]: e.target.value
-        }))
+        if (isSignup) {
+            setSignupInputs((prevState) => ({
+                ...prevState,
+                [e.target.name]: e.target.value
+            }));
+        } else {
+            setLoginInputs((prevState) => ({
+                ...prevState,
+                [e.target.name]: e.target.value
+            }));
+        }
     };
 
     const sendRequest = async (type = "login") => {
-        const res = await axios.post(`http://localhost:8000/api/user/${type}`, {
-            name: inputs.name,
-            email: inputs.email,
-            password: inputs.password,
-        }).catch(err => console.log(err));
+        const inputs = type === "login" ? loginInputs : signupInputs;
+        const res = await axios.post(`http://localhost:8000/api/user/${type}`, inputs).catch(err => console.log(err));
 
         const data = await res.data;
         console.log(data);
@@ -35,20 +40,22 @@ const Auth = () => {
     };
 
     const handleSubmit = (e) => {
-        e.preventDefault()
-        console.log(inputs);
+        e.preventDefault();
+        console.log(isSignup ? signupInputs : loginInputs);
         if (isSignup) {
             sendRequest("signup")
                 .then((data) => localStorage.setItem("userId", data.user._id))
                 .then(() => dispatch(authActions.login()))
-                .then(() => navigate("/blogs"))
+                .then(() => navigate("/blogs"));
         } else {
             sendRequest()
                 .then((data) => localStorage.setItem("userId", data.user._id))
                 .then(() => dispatch(authActions.login()))
-                .then(() => navigate("/blogs"))
+                .then(() => navigate("/blogs"));
         }
     };
+
+    const inputs = isSignup ? signupInputs : loginInputs;
 
     return (
         <div>
