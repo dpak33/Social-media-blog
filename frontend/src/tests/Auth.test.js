@@ -40,9 +40,7 @@ describe('Auth', () => {
         expect(getByPlaceholderText('Password').value).toBe('password');
     });
 
-
-
-    it('makes a post request to the correct signup endpoint on form submission', async () => {
+    it('makes a post request to the correct login endpoint on form submission', async () => {
         axios.post.mockResolvedValueOnce({ data: { user: { _id: '1234' } } });
 
         const { getByPlaceholderText, getByText } = render(
@@ -70,5 +68,37 @@ describe('Auth', () => {
         });
     });
 
+    it('makes a post request to the correct signup endpoint on form submission', async () => {
+        axios.post.mockResolvedValueOnce({ data: { user: { _id: '1234' } } });
 
+        const { getByPlaceholderText, getByText } = render(
+            <Provider store={mockStore}>
+                <BrowserRouter>
+                    <Auth />
+                </BrowserRouter>
+            </Provider>
+        );
+
+        fireEvent.click(getByText('Change to Signup'));
+
+        fireEvent.change(getByPlaceholderText('Name'), {
+            target: { value: 'tester' },
+        });
+        fireEvent.change(getByPlaceholderText('Email'), {
+            target: { value: 'test@test.com' },
+        });
+        fireEvent.change(getByPlaceholderText('Password'), {
+            target: { value: 'password' },
+        });
+
+        fireEvent.click(getByText('Submit'));
+
+        await waitFor(() => {
+            expect(axios.post).toHaveBeenCalledWith('http://localhost:8000/api/user/signup', {
+                name: 'tester',
+                email: 'test@test.com',
+                password: 'password',
+            });
+        });
+    });
 });
