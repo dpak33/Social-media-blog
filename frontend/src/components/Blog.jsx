@@ -50,38 +50,47 @@ const Blog = ({ title, description, imageURL, userName, isUser, id }) => {
     }, [imageURL]);
 
     return (
-        <div>
-            {""}
-            <Card sx={{
-                width: "40%", margin: 'auto', mt: 2, padding: 2, boxShadow: "5px 5px 10px", ":hoover:":
-                    { boxShadow: "10px 10px 20px" }
-            }}>
+        <div data-testid="blog-item">
+            <Card
+                sx={{
+                    width: "40%",
+                    margin: 'auto',
+                    mt: 2,
+                    padding: 2,
+                    boxShadow: "5px 5px 10px",
+                    ":hoover:":
+                        { boxShadow: "10px 10px 20px" }
+                }}
+            >
                 {isUser && (
                     <Box display="flex">
-                        <IconButton onClick={handleEdit} sx={{ marginLeft: 'auto' }} aria-label='edit'>
+                        <IconButton onClick={handleEdit} sx={{ marginLeft: 'auto' }} aria-label='edit' data-testid="edit-button">
                             <BorderColorTwoToneIcon />
                         </IconButton>
-                        <IconButton onClick={handleDelete} aria-label='delete'>
-                            <ClearTwoToneIcon /></IconButton>
+                        <IconButton onClick={handleDelete} aria-label='delete' data-testid="delete-button">
+                            <ClearTwoToneIcon />
+                        </IconButton>
                     </Box>
                 )}
                 <CardHeader
                     avatar={
-                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+                        <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe" data-testid="user-avatar">
                             {userName}
                         </Avatar>
                     }
                     title={title}
+                    data-testid="blog-title"
                 />
                 {loadedImage && (
                     <img
                         style={{ height: '194px', width: '100%', objectFit: 'cover' }}
                         src={loadedImage}
                         alt="Paella dish"
+                        data-testid="blog-image"
                     />
                 )}
                 <CardContent>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color="text.secondary" data-testid="blog-description">
                         <b>{userName}</b>{": "}  {description}
                     </Typography>
                 </CardContent>

@@ -9,6 +9,7 @@ import UserBlogs from '../components/UserBlogs';
 import BlogDetail from '../components/BlogDetail';
 import React from 'react';
 
+
 jest.mock('axios');
 
 axios.delete.mockResolvedValue({ data: {} });
@@ -333,4 +334,104 @@ describe('BlogDetail', () => {
         // Clear the mock at the end of the test
         jest.clearAllMocks();
     });
+
+});
+
+
+describe('Blogs', () => {
+    it('fetches and displays blogs data', async () => {
+        // Mock data
+        const mockData = {
+            data: {
+                blogs: [
+                    { _id: '1', title: 'Test Blog 1', description: 'Test Description 1', image: 'Test Image URL 1', user: { _id: 'User1', name: 'User Name 1' } },
+                    { _id: '2', title: 'Test Blog 2', description: 'Test Description 2', image: 'Test Image URL 2', user: { _id: 'User2', name: 'User Name 2' } },
+                ],
+            },
+        };
+
+        // Mock axios.get
+        axios.get.mockResolvedValueOnce(mockData);
+
+        // Render component
+        const { findAllByTestId } = render(
+            <BrowserRouter>
+                <Blogs />
+            </BrowserRouter>
+        );
+
+        const blogItems = await findAllByTestId('blog-item');
+
+        // Check each blog item
+        await waitFor(() => {
+            blogItems.forEach((blogItem, index) => {
+                const titleElement = within(blogItem).getByTestId('blog-title');
+                const descriptionElement = within(blogItem).getByTestId('blog-description');
+
+                expect(titleElement).toHaveTextContent(mockData.data.blogs[index].title);
+                expect(descriptionElement).toHaveTextContent(mockData.data.blogs[index].description);
+            });
+        });
+
+        // Clear the mock at the end of the test
+        jest.clearAllMocks();
+    });
+
+    it('renders the userName correctly', async () => {
+        const mockData = {
+            data: {
+                blogs: [
+                    { _id: '1', title: 'Test Blog 1', description: 'Test Description 1', image: 'Test Image URL 1', user: { _id: 'User1', name: 'User Name 1' } },
+                    { _id: '2', title: 'Test Blog 2', description: 'Test Description 2', image: 'Test Image URL 2', user: { _id: 'User2', name: 'User Name 2' } },
+                ],
+            },
+        };
+
+        axios.get.mockResolvedValueOnce(mockData);
+
+        const { findAllByTestId } = render(
+            <BrowserRouter>
+                <Blogs />
+            </BrowserRouter>
+        );
+
+        const blogItems = await findAllByTestId('blog-item');
+
+        await waitFor(() => {
+            blogItems.forEach((blogItem, index) => {
+                const userElement = within(blogItem).getByTestId("user-avatar");
+                expect(userElement).toHaveTextContent(mockData.data.blogs[index].user.name);
+            });
+        });
+
+        jest.clearAllMocks();
+    });
+
+    it('renders the correct number of blog items', async () => {
+        const mockData = {
+            data: {
+                blogs: [
+                    { _id: '1', title: 'Test Blog 1', description: 'Test Description 1', image: 'Test Image URL 1', user: { _id: 'User1', name: 'User Name 1' } },
+                    { _id: '2', title: 'Test Blog 2', description: 'Test Description 2', image: 'Test Image URL 2', user: { _id: 'User2', name: 'User Name 2' } },
+                ],
+            },
+        };
+
+        axios.get.mockResolvedValueOnce(mockData);
+
+        const { findAllByTestId } = render(
+            <BrowserRouter>
+                <Blogs />
+            </BrowserRouter>
+        );
+
+        const blogItems = await findAllByTestId('blog-item');
+
+        await waitFor(() => {
+            expect(blogItems).toHaveLength(mockData.data.blogs.length);
+        });
+
+        jest.clearAllMocks();
+    });
+
 });
