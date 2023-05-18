@@ -3,8 +3,9 @@ import mongoose from 'mongoose';
 import router from './routes/user-routes.js';
 import blogRouter from './routes/blog-routes.js';
 import cors from "cors";
+import dotenv from 'dotenv';
 
-
+dotenv.config();
 
 const app = express();
 app.use(express.json());
@@ -16,7 +17,7 @@ app.use("/api/blog", blogRouter);
 
 mongoose.
     connect(
-        'mongodb+srv://dpakenham:Obsidian1989!@blogcluster.k1qgbm2.mongodb.net/Blog?retryWrites=true&w=majority'
+        process.env.MONGODB_URI
     ).then(() => app.listen(8000)).then(() => console.log("Connected!"))
     .catch((error) => console.log(error));
 
