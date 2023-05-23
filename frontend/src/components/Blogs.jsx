@@ -3,34 +3,36 @@ import axios from 'axios';
 import Blog from './Blog';
 
 const Blogs = () => {
-    const [blogs, setBlogs] = useState();
-    const sendRequest = async () => {
-        const res = await axios.get("http://localhost:8000/api/blog").catch(err => console.log(err));
-        const data = await res.data;
-        return data;
-    }
+    const [blogs, setBlogs] = useState([]);
 
     useEffect(() => {
-        sendRequest().then(data => setBlogs(data.blogs));
+        const sendRequest = async () => {
+            try {
+                const res = await axios.get("http://localhost:8000/api/blog");
+                setBlogs(res.data.blogs);
+            } catch (err) {
+                console.log(err);
+            }
+        }
+        sendRequest();
     }, []);
-    console.log(blogs);
+
+    const sortedBlogs = blogs.length > 0 ? [...blogs].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)) : [];
 
     return (
         <div>
-            {blogs && blogs.map((blog, index) => (
+            {sortedBlogs.map((blog, index) => (
                 <Blog
-                    /*Below we check that the user Id in local storage matches the id associated with the blog. When we console.log it returns true
-                            See how we are taking the Blog object and its five props and then setting their values for each blog through which we map
-                            here. We set as permanently true in Userblogs for obvious reasons. */
                     id={blog._id}
                     isUser={localStorage.getItem("userId") === blog.user._id}
                     title={blog.title}
                     description={blog.description}
                     imageURL={blog.image}
-                    userName={blog.user.name} />
+                    userName={blog.user.name}
+                />
             ))}
         </div>
     )
 };
 
-export default Blogs
+export default Blogs;
